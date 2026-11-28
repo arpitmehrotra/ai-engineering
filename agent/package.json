@@ -5,7 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "tsx --env-file=.env src/agent.ts"
+    "start": "tsx --env-file=.env src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "eval": "tsx --env-file=.env evals/run-evals.ts"
   },
   "keywords": [],
   "author": "",

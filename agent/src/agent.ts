@@ -1,13 +1,13 @@
 import ollama, { type Message } from "ollama";
-import { tools, getPayslip, calculateTax } from "./tools";
+import { tools, getPayslip, calculateTax, findEmployee } from "./tools";
 
 const MODEL = process.env.OLLAMA_MODEL ?? "qwen3:8b";
 const MAX_STEPS = 10;
 
-// name the model sees -> function your code runs
 const registry: Record<string, (args: any) => string> = {
   getPayslip: (a) => getPayslip(Number(a.employeeId), a.month),
   calculateTax: (a) => calculateTax(Number(a.annualGross)),
+  findEmployee: (a) => findEmployee(String(a.name)),
 };
 
 export async function runAgent(question: string): Promise<string> {
@@ -16,7 +16,8 @@ export async function runAgent(question: string): Promise<string> {
       role: "system",
       content:
         "You are a payroll assistant. You are in a loop and can call tools multiple times. " +
-        "Use tools for all figures; never invent data. If a tool says no data exists, say so.",
+        "Use tools for all figures; never invent data. If a tool says no data exists, say so." +
+        "Never guess an employee ID; use findEmployee or ask.",
     },
     { role: "user", content: question },
   ];
@@ -26,7 +27,7 @@ export async function runAgent(question: string): Promise<string> {
       model: MODEL,
       messages,
       tools,
-      think: true,
+      think: false,
     });
     messages.push(res.message);
 
@@ -49,9 +50,3 @@ export async function runAgent(question: string): Promise<string> {
   }
   return "Stopped: reached the step limit without a final answer.";
 }
-
-// run: npm start -- "Why is employee 42's take-home lower in November?"
-const question =
-  process.argv.slice(2).join(" ") ||
-  "Why is employee 42's take-home lower in November than October?";
-runAgent(question).then((answer) => console.log("\nANSWER:\n", answer));

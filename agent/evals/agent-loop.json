@@ -1,0 +1,30 @@
+[
+  {
+    "id": "emp42-drop",
+    "question": "Why is employee 42's take-home lower in November than October?",
+    "mustInclude": ["4,?000", "loss of pay|LOP", "TDS|tax"]
+  },
+  {
+    "id": "karan-net-overtime",
+    "question": "What is Karan Mehta's net pay in November 2026, and how much of his gross is overtime?",
+    "mustInclude": ["1,?11,?700|111,?700", "6,?000"]
+  },
+  {
+    "id": "lowest-pf",
+    "question": "Among employees 7, 15, 23 and 42, who has the lowest PF deduction relative to basic pay in November 2026?",
+    "mustInclude": ["Vikram|employee 23"]
+  },
+  {
+    "id": "emp15-tax",
+    "question": "Estimate the annual tax for employee 15 based on their November 2026 payslip.",
+    "mustInclude": ["11,?500"]
+  },
+  {
+    "id": "emp99-unknown",
+    "question": "What is employee 99's net pay?",
+    "mustInclude": [
+      "not (found|available|present)|no (payslip|employee|record|data)|could ?n[o']?t find|does ?n[o']?t exist|invalid|unknown"
+    ],
+    "mustNotInclude": ["₹\\s?\\d|INR\\s?\\d"]
+  }
+]

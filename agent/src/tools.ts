@@ -50,6 +50,19 @@ export function calculateTax(annualGross: number): string {
   return JSON.stringify({ annualGross, estimatedTax: Math.round(tax) });
 }
 
+export function findEmployee(name: string): string {
+  const q = name.trim().toLowerCase();
+  const people = new Map<number, string>();
+  for (const p of payslips) people.set(p.employeeId, p.name);
+  const matches = [...people].filter(([, n]) => n.toLowerCase().includes(q));
+  if (matches.length === 0) {
+    return `No employee matching "${name}". Known employees: ${[...people.values()].join(", ")}`;
+  }
+  return JSON.stringify(
+    matches.map(([employeeId, name]) => ({ employeeId, name })),
+  );
+}
+
 export const tools: Tool[] = [
   {
     type: "function",
@@ -88,6 +101,24 @@ export const tools: Tool[] = [
           },
         },
         required: ["annualGross"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "findEmployee",
+      description:
+        "Find employee IDs by full or partial name (case-insensitive). Use this first when the user gives a name instead of an ID. May return several matches; if so, ask the user which one.",
+      parameters: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            description: 'Full or partial name, e.g. "Karan" or "Karan Mehta"',
+          },
+        },
+        required: ["name"],
       },
     },
   },
